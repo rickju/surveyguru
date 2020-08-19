@@ -1,0 +1,9 @@
+HelloAndroid/
+app/libs/
+app/src/androidTest/java/com/example/
+app/src/test/java/com/example/
+bak/
+build/
+ormlite-android-5.1.jar
+ormlite-core-5.1.jar
+

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentQuiz">
+  </FrameLayout>
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentQuiz">
+
+<!-- question itself -->
+<TextView
+    android:id="@+id/tv_title"
+    android:textSize="45dp"
+    android:fontFamily="sans-serif-black"   
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_marginLeft="20dp"
+    android:layout_weight="1"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:text="question: ..........."
+    app:layout_constraintHorizontal_bias="0.2" />
+
+<!-- answer block -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/linear_layout"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="20dp"
+              android:layout_marginLeft="40dp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+<!--
+<CheckBox android:id="@+id/checkbox_meat"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/meat"
+          android:onClick="onCheckboxClicked"/>
+<CheckBox android:id="@+id/checkbox_cheese"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/cheese"
+          android:onClick="onCheckboxClicked"/>
+    -->
+
+<!--android:onClick="onRadioButtonClicked" -->
+<!-- radio -->
+<RadioGroup
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/rg"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+<!--
+  <RadioButton
+    android:id="@+id/rb_1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/placeholder"
+    />
+
+  <RadioButton
+    android:id="@+id/rb_2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/placeholder"
+    />
+    -->
+  </RadioGroup>
+
+</LinearLayout>
+
+<!-- prev/next-->
+<Button
+    android:id="@+id/btn_prev"
+    android:text="@string/btn_prev"
+    android:textSize="20dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom ="10dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    />
+<Button
+    android:id="@+id/btn_next"
+    android:text="@string/btn_next"
+    android:textSize="20dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom ="10dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    />
+
+<!-- curr quiz's num -->
+<TextView
+    android:id="@+id/tv_num"
+    android:textSize="20dp"
+    android:text="@string/placeholder"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom ="10dp"
+    android:layout_weight="1"
+    app:layout_constraintStart_toEndOf="@+id/btn_prev"
+    app:layout_constraintEnd_toStartOf="@+id/btn_next"
+    app:layout_constraintBottom_toBottomOf="parent"
+   />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
