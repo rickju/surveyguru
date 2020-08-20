@@ -32,9 +32,14 @@ import android.widget.RadioButton;
  */
 
 public class FragmentQuiz extends Fragment 
-	implements android.widget.CompoundButton.OnCheckedChangeListener {
+	  implements android.widget.CompoundButton.OnCheckedChangeListener {
 
-    int m_curr;
+    Survey survey;
+    Session sssn;
+    int curr;
+    int m_checked;
+
+    RadioGroup rg;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,112 +106,123 @@ public class FragmentQuiz extends Fragment
     }
 
     // update ui
-    public void update() {
-      MainActivity a = (MainActivity)getHost();
-      Survey s = a.g_survey;
-      Qstn q = s.list.get(m_curr);
+    private void do_update() {
+      Qstn q = survey.list.get(curr);
 
       // qstn title
 			TextView tv_title = (TextView)getView().findViewById(R.id.tv_title);
       tv_title.setText(q.title);
 
-			// XXX show qstn num/total
+			// show qstn num/total
 			TextView tv = (TextView)getView().findViewById(R.id.tv_num);
-			tv.setText(m_curr+1+ "/" + s.list.size());
+			tv.setText(curr+1+ "/" + survey.list.size());
 
+      /* TODO. no mul yet.
       // checkbox for multiple, radiobox oterwise
-      if (q.b_mul) {
-        // create checkbox
-        // -----------
-        LinearLayout layout = (LinearLayout)getView().findViewById(R.id.linear_layout);
-        final CheckBox[] cb_list = new CheckBox[5];
-        for(int i=0; i<q.opts.length; i++) {
-           cb_list[i]  = new CheckBox(getContext());
-           cb_list[i].setId(i + 100);
-           cb_list[i].setTextSize(30);
-           // checkbox onClick
-           cb_list[i].setOnCheckedChangeListener(this);
-           layout.addView(cb_list[i]);
-           cb_list[i].setText(q.opts[i]);
+      */
+      {
+        // clear radio group
+        int count = rg.getChildCount();
+        if (count > 0) {
+          for (int i=count-1; i>=0; i--) {
+            rg.removeViewAt(i);
+          }
         }
-      } else {
         // create radio
-        // -----------
-        RadioGroup rg = (RadioGroup)getView().findViewById(R.id.rg);
-        final RadioButton[] rb_list = new RadioButton[5];
+        rg = (RadioGroup)getView().findViewById(R.id.rg);
         for(int i=0; i<q.opts.length; i++) {
-           rb_list[i]  = new RadioButton(getContext());
-           rb_list[i].setId(i + 100);
-           rb_list[i].setText(q.opts[i]);
-           rb_list[i].setTextSize(30);
-           rg.addView(rb_list[i]);
+          RadioButton rb = new RadioButton(getContext());
+          rb.setId(i + 100);
+          rb.setText(q.opts[i]);
+          rb.setTextSize(30);
+          rb.setOnCheckedChangeListener(this);
+          // selected
+          if (sssn.aswr[curr] == i) {
+             rb.setSelected(true);
+          }
+          rg.addView(rb);
         }
       } // radio
 
-      // save answer to session
 
-      // btns
-      if (m_curr == 0) {
+      // disable btn prev 
+      Button btn_prev = (Button)getView().findViewById(R.id.btn_prev);
+      if (curr == 0) {
         // disable prev
+        btn_prev.setClickable(false);
       }
-      if (m_curr >= s.list.size()) {
+      else
+        btn_prev.setClickable(true);
+
+      // btn next or finish
+      Button btn_next = (Button)getView().findViewById(R.id.btn_next);
+      if (curr >= survey.list.size()) {
         // next -> finish
+        btn_next.setText("Finish");
       }
-    } // end of update
+      else
+        btn_next.setText("Next");
+    } // end of do_update
 
     @Override
     public void onViewCreated(View _view, Bundle _savedInstanceState) {
+
 			// get arg
 			String target_app_name = FragmentQuizArgs.fromBundle(getArguments()).getTargetName();
-			m_curr = FragmentQuizArgs.fromBundle(getArguments()).getCurrPos();
+			curr = FragmentQuizArgs.fromBundle(getArguments()).getCurrPos();
 
-      // radio group onClick
-      RadioGroup rg = (RadioGroup)getView().findViewById(R.id.rg);
-      rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            TextView tv = (TextView)getView().findViewById(R.id.tv_num);
-            switch(checkedId) {
-              // case R.id.rb_1:
-              // 		// TODO Something
-              // 		tv.setText("rb1");
-              // 		break;
-              // case R.id.rb_2:
-                // 	// TODO Something
-                // 	tv.setText("rb2");
-              // 		break;
-              }
-          }
-        });
+      //
+      MainActivity a = (MainActivity)getHost();
+      survey = a.survey;
+      sssn = a.get_sssn(target_app_name);
+      curr = sssn.curr;
+      m_checked = -1;
 
+      // change app_name/title bar
+      a.setTitle(getString(R.string.app_name)+ ": " +sssn.name);
+     
+      // radio group
+      rg = (RadioGroup)getView().findViewById(R.id.rg);
 			// btn prev
 			Button btn_prev = (Button)getView().findViewById(R.id.btn_prev);
 			btn_prev.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View _view) {
-            m_curr++;
-            update();
+            curr--;
+            do_update();
+					}
+			});
+
+			// btn next
+			Button btn_next = (Button)getView().findViewById(R.id.btn_next);
+			btn_next.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View _view) {
+            try {
+              // next
+              curr++;
+              do_update();
+            } catch (Exception _e) {
+              System.out.println(_e);
+            }
 					}
 			});
 
       // update UI to show curr qstn
-      update();
+      do_update();
 	} // onViewCreated
 
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		TextView tv = (TextView)getView().findViewById(R.id.tv_num);
-		tv.setText("rb1"); // XXX
-		// switch(checkedId) {
-			// case R.id.rb_1:
-			// 		// TODO Something
-			// 		tv.setText("rb1");
-			// 		break;
-			// case R.id.rb_2:
-				// 	// TODO Something
-				// 	tv.setText("rb2");
-			// 		break;
-			// }
-	}
+	public void onCheckedChanged(CompoundButton _button, boolean _isChecked) {
+    // give aswr
+    try {
+      int aswr = rg.getCheckedRadioButtonId() - 100;
+      System.out.println("give aswr ------------ curr: "+curr+" aswr: "+aswr);
+      sssn.give_aswr(curr, aswr);
+      sssn.print();
+    } catch (Exception _e) {
+      System.out.println(_e);
+    }
+  }
 }
 

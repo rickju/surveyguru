@@ -17,6 +17,7 @@
     <!-- input app name -->
     <EditText
         android:id="@+id/etName"
+        android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -30,6 +31,7 @@
     <!-- btn start quiz -->
     <Button
         android:id="@+id/btn_start"
+        android:textSize="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
