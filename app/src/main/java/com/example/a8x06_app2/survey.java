@@ -97,6 +97,7 @@ class Session {
   }
 
   public void prev() {
+    System.out.println("sssn::prev: curr: "+curr);
     if (curr <= 0)
       curr = 0;
     else {
@@ -104,12 +105,15 @@ class Session {
       editor.putInt(name+"#curr", curr);
       editor.commit();
     }
+    System.out.println("sssn::prev: new: "+curr);
   }
 
   public void next() {
+    System.out.println("sssn::next: curr: "+curr);
     curr = (curr+1) % s.list.size(); // %/remainder
     editor.putInt(name+"#curr", curr);
     editor.commit();
+    System.out.println("sssn::next: curr: "+curr);
   }
 
   //
@@ -145,7 +149,6 @@ class Session {
       throw new Exception("Session::give_aswr : invalid arg: _aswr: "+_aswr);
     
     aswr[i] = _aswr;
-    curr = (_qstn_id+1) % s.list.size();
     // store
     editor.putInt(name+"#curr", i);
     editor.putInt(name+"#aswr#"+i, aswr[i]);

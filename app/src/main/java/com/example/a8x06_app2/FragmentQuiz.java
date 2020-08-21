@@ -123,19 +123,19 @@ public class FragmentQuiz extends Fragment
           }
         }
         //
-        System.out.println("Create radios: sssn.aswr["+sssn.curr()+"]: "+sssn.aswr[sssn.curr()]);
+        // System.out.println("Create radios: sssn.aswr["+sssn.curr()+"]: "+sssn.aswr[sssn.curr()]);
         // create radio
         rg = (RadioGroup)getView().findViewById(R.id.rg);
         for(int i=0; i<q.opts.length; i++) {
           int id = i+10000;
-          System.out.println("  new radio["+i+"]: "+ id+ ", str: "+q.opts[i]);
+          // System.out.println("  new radio["+i+"]: "+ id+ ", str: "+q.opts[i]);
           RadioButton rb = new RadioButton(getContext());
           rb.setId(id);
           rb.setText(q.opts[i]);
           rb.setTextSize(30);
           // selected
           if (sssn.aswr[sssn.curr()] == i) {
-             System.out.println("  checked radio: "+i);
+             // System.out.println("  checked radio: "+i);
              rb.setChecked(true);
           }
           //
@@ -186,7 +186,7 @@ public class FragmentQuiz extends Fragment
 					@Override
 					public void onClick(View _view) {
             // prev
-            System.out.println("old qstn: "+sssn.curr()+ ", new qstn: "+(sssn.curr()-1));
+            System.out.println("prev ---: old qstn: "+sssn.curr()+ ", new qstn: "+(sssn.curr()-1));
             sssn.prev();
             do_update();
 					}
@@ -200,10 +200,11 @@ public class FragmentQuiz extends Fragment
             try {
               if (sssn.curr() < MyApp.survey.list.size()-1) {
                 // next
-                System.out.println("old qstn: "+sssn.curr()+ ", new qstn: "+(sssn.curr()+1));
+                System.out.println("next ---: old qstn: "+sssn.curr()+ ", new qstn: "+(sssn.curr()+1));
                 sssn.next();
                 do_update();
               } else { 
+                System.out.println("finish ---");
                 // finish
                 sssn.finish();
                 // nav -> list
@@ -229,7 +230,7 @@ public class FragmentQuiz extends Fragment
     int id = rb.getId();
     String txt = rb.getText().toString();
     boolean b_chkd = rb.isChecked();
-    System.out.println("radio checked changed: " +id+ ", txt: "+txt+ ", checked: "+b_chkd);
+    // System.out.println("radio checked changed: " +id+ ", txt: "+txt+ ", checked: "+b_chkd);
      
     /* XXX somehow this returns wrong ID XXX
     int id = rg.getCheckedRadioButtonId();
@@ -253,7 +254,7 @@ public class FragmentQuiz extends Fragment
       // only if changed
       if (chkd>=0 && chkd<MyApp.survey.list.get(sssn.curr()).opts.length && sssn.aswr[sssn.curr()] != chkd) {
         // give aswr
-        System.out.println("give aswr to qstn: "+sssn.curr()+", old aswr: "+sssn.aswr[sssn.curr()]+ ", new aswr: "+chkd);
+        // System.out.println("give aswr to qstn: "+sssn.curr()+", old aswr: "+sssn.aswr[sssn.curr()]+ ", new aswr: "+chkd);
         sssn.give_aswr(sssn.curr(), chkd);
         // sssn.print();
       }
