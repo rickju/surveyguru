@@ -33,8 +33,6 @@ import android.widget.RadioButton;
 
 public class FragmentQuiz extends Fragment 
 	  implements android.widget.CompoundButton.OnCheckedChangeListener {
-
-    int curr;
     Session sssn;
     RadioGroup rg;
 
@@ -103,7 +101,7 @@ public class FragmentQuiz extends Fragment
 
     // update ui
     private void do_update() {
-      Qstn q = MyApp.survey.list.get(curr);
+      Qstn q = MyApp.survey.list.get(sssn.curr());
 
       // qstn title
 			TextView tv_title = (TextView)getView().findViewById(R.id.tv_title);
@@ -111,7 +109,7 @@ public class FragmentQuiz extends Fragment
 
 			// show qstn num/total
 			TextView tv = (TextView)getView().findViewById(R.id.tv_num);
-			tv.setText(curr+1+ "/" + MyApp.survey.list.size());
+			tv.setText(sssn.curr()+1+ "/" + MyApp.survey.list.size());
 
       /* TODO. no mul yet.
       // checkbox for multiple, radiobox oterwise
@@ -125,7 +123,7 @@ public class FragmentQuiz extends Fragment
           }
         }
         //
-        System.out.println("Create radios: sssn.aswr["+curr+"]: "+sssn.aswr[curr]);
+        System.out.println("Create radios: sssn.aswr["+sssn.curr()+"]: "+sssn.aswr[sssn.curr()]);
         // create radio
         rg = (RadioGroup)getView().findViewById(R.id.rg);
         for(int i=0; i<q.opts.length; i++) {
@@ -136,7 +134,7 @@ public class FragmentQuiz extends Fragment
           rb.setText(q.opts[i]);
           rb.setTextSize(30);
           // selected
-          if (sssn.aswr[curr] == i) {
+          if (sssn.aswr[sssn.curr()] == i) {
              System.out.println("  checked radio: "+i);
              rb.setChecked(true);
           }
@@ -149,7 +147,7 @@ public class FragmentQuiz extends Fragment
 
       // disable btn prev 
       Button btn_prev = (Button)getView().findViewById(R.id.btn_prev);
-      if (curr == 0) {
+      if (sssn.curr() == 0) {
         // disable prev
         btn_prev.setClickable(false);
       }
@@ -158,7 +156,7 @@ public class FragmentQuiz extends Fragment
 
       // btn next or finish
       Button btn_next = (Button)getView().findViewById(R.id.btn_next);
-      if (curr >= MyApp.survey.list.size()-1) {
+      if (sssn.curr() >= MyApp.survey.list.size()-1) {
         // next -> finish
         btn_next.setText("Finish");
       }
@@ -175,7 +173,6 @@ public class FragmentQuiz extends Fragment
       //
       MainActivity main = (MainActivity)getHost();
       sssn = MyApp.get_sssn(target_app_name);
-      curr = sssn.curr;
 
       // change app_name/title bar
       // main.setTitle(getString(R.string.app_name)+ ": " +sssn.name);
@@ -188,8 +185,9 @@ public class FragmentQuiz extends Fragment
 			btn_prev.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View _view) {
-            System.out.println("old qstn: "+curr+ ", new qstn: "+(curr-1));
-            curr--;
+            // prev
+            System.out.println("old qstn: "+sssn.curr()+ ", new qstn: "+(sssn.curr()-1));
+            sssn.prev();
             do_update();
 					}
 			});
@@ -200,10 +198,10 @@ public class FragmentQuiz extends Fragment
 					@Override
 					public void onClick(View _view) {
             try {
-              if (curr < MyApp.survey.list.size()-1) {
+              if (sssn.curr() < MyApp.survey.list.size()-1) {
                 // next
-                System.out.println("old qstn: "+curr+ ", new qstn: "+(curr+1));
-                curr++;
+                System.out.println("old qstn: "+sssn.curr()+ ", new qstn: "+(sssn.curr()+1));
+                sssn.next();
                 do_update();
               } else { 
                 // finish
@@ -253,10 +251,10 @@ public class FragmentQuiz extends Fragment
     if (_isChecked)
     try {
       // only if changed
-      if (chkd>=0 && chkd<MyApp.survey.list.get(curr).opts.length && sssn.aswr[curr] != chkd) {
+      if (chkd>=0 && chkd<MyApp.survey.list.get(sssn.curr()).opts.length && sssn.aswr[sssn.curr()] != chkd) {
         // give aswr
-        System.out.println("give aswr to qstn: "+curr+", old aswr: "+sssn.aswr[curr]+ ", new aswr: "+chkd);
-        sssn.give_aswr(curr, chkd);
+        System.out.println("give aswr to qstn: "+sssn.curr()+", old aswr: "+sssn.aswr[sssn.curr()]+ ", new aswr: "+chkd);
+        sssn.give_aswr(sssn.curr(), chkd);
         // sssn.print();
       }
     } catch (Exception _e) {

@@ -55,10 +55,10 @@ class Survey {
 class Session {
   public String name;  // target_app_name;
   public String mark;
+  public int[] aswr;  // aswr[i] is for qstn_i(survey.list[i])
 
-  boolean b_done;
-      int curr;  // curr step/qstn. e.g. 3 for 3/10 
-    int[] aswr;  // aswr[i] is for qstn_i(survey.list[i])
+ private boolean b_done;
+ private     int curr;  // curr step/qstn. e.g. 3 for 3/10 
 
   Survey s;
   SharedPreferences pref;
@@ -92,9 +92,32 @@ class Session {
     return b_done;
   }
 
+  public int curr() {
+    return curr;
+  }
+
+  public void prev() {
+    if (curr <= 0)
+      curr = 0;
+    else {
+      curr = (curr-1) % s.list.size(); // %/remainder
+      editor.putInt(name+"#curr", curr);
+      editor.commit();
+    }
+  }
+
+  public void next() {
+    curr = (curr+1) % s.list.size(); // %/remainder
+    editor.putInt(name+"#curr", curr);
+    editor.commit();
+  }
+
   //
   public void finish() {
+    curr = 0;
     b_done = true;
+    do_calc_mark();
+    editor.putInt(name+"#curr", 0);
     editor.putBoolean(name+"#done", b_done);
     editor.commit();
   }
@@ -126,7 +149,6 @@ class Session {
     // store
     editor.putInt(name+"#curr", i);
     editor.putInt(name+"#aswr#"+i, aswr[i]);
-    // commit
     editor.commit();
   }
 
