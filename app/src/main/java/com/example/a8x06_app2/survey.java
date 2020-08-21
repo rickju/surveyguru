@@ -57,8 +57,8 @@ class Session {
   public String mark;
 
   boolean b_done;
-     int curr;  // curr step/qstn. e.g. 3 for 3/10 
-   int[] aswr;  // aswr[i] is for qstn_i(survey.list[i])
+      int curr;  // curr step/qstn. e.g. 3 for 3/10 
+    int[] aswr;  // aswr[i] is for qstn_i(survey.list[i])
 
   Survey s;
   SharedPreferences pref;
@@ -80,9 +80,11 @@ class Session {
 
   // print for unit test
   public void print() {
-    System.out.println("Session: "+name + ", curr: "+curr +", done: "+b_done);
+    System.out.println("Session: "+name + ", done: "+b_done);
+    System.out.print("   answer list: ");
     for (int i=0; i<aswr.length; i++)
-      System.out.println("   "+i+": "+aswr[i]);
+      System.out.print("   Q"+i+ ", A: "+aswr[i]+ ", " );
+    System.out.println("--- ");
   }
 
   // check if all questions answered
@@ -106,7 +108,7 @@ class Session {
         db_mark += each;
     }
     int i_mark = (int)db_mark;
-    mark = Integer.toString(i_mark);
+    mark = Integer.toString(i_mark) + "/100";
   }
 
   // when user gave an answer
@@ -120,7 +122,7 @@ class Session {
       throw new Exception("Session::give_aswr : invalid arg: _aswr: "+_aswr);
     
     aswr[i] = _aswr;
-    curr = _qstn_id+1;
+    curr = (_qstn_id+1) % s.list.size();
     // store
     editor.putInt(name+"#curr", i);
     editor.putInt(name+"#aswr#"+i, aswr[i]);
@@ -132,6 +134,7 @@ class Session {
   private void do_load() {
     b_done = pref.getBoolean(name+"#done", false);
     curr = pref.getInt(name+"#curr", 0);
+    curr = curr % s.list.size(); // %/remainder
     // read aswr
     int len = s.list.size();
     for (int i=0; i<len; i++) {

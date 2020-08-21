@@ -90,9 +90,9 @@ public class FragmentList extends Fragment
     @Override
     public void onViewCreated(View _view, Bundle _savedInstanceState) {
       MainActivity a = (MainActivity)getHost();
-      // attach the adapter to a ListView
+      // adapter -> ListView
       listView = (ListView) getView().findViewById(R.id.list_view);
-      listView.setAdapter(a.sssn_adapter);
+      listView.setAdapter(MyApp.sssn_adapter);
       listView.setOnItemClickListener(this);
 
       // btn new

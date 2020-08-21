@@ -34,11 +34,8 @@ import android.widget.RadioButton;
 public class FragmentQuiz extends Fragment 
 	  implements android.widget.CompoundButton.OnCheckedChangeListener {
 
-    Survey survey;
-    Session sssn;
     int curr;
-    int m_checked;
-
+    Session sssn;
     RadioGroup rg;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -88,13 +85,12 @@ public class FragmentQuiz extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_quiz, container, false);
 
 				// set nav up cb
-				// ----------
+				// ---------------
 				// this callback will only be called when MyFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
 							@Override
-							public void handleOnBackPressed() {
-									// Handle the back button event
-									// nav
+							public void handleOnBackPressed() { // Handle the back button event
+									// nav -> list
 									NavDirections action = FragmentQuizDirections.actionFragmentQuizToFragmentList();
 									Navigation.findNavController(getView()).navigate(action);
               }
@@ -107,7 +103,7 @@ public class FragmentQuiz extends Fragment
 
     // update ui
     private void do_update() {
-      Qstn q = survey.list.get(curr);
+      Qstn q = MyApp.survey.list.get(curr);
 
       // qstn title
 			TextView tv_title = (TextView)getView().findViewById(R.id.tv_title);
@@ -115,7 +111,7 @@ public class FragmentQuiz extends Fragment
 
 			// show qstn num/total
 			TextView tv = (TextView)getView().findViewById(R.id.tv_num);
-			tv.setText(curr+1+ "/" + survey.list.size());
+			tv.setText(curr+1+ "/" + MyApp.survey.list.size());
 
       /* TODO. no mul yet.
       // checkbox for multiple, radiobox oterwise
@@ -128,18 +124,24 @@ public class FragmentQuiz extends Fragment
             rg.removeViewAt(i);
           }
         }
+        //
+        System.out.println("Create radios: sssn.aswr["+curr+"]: "+sssn.aswr[curr]);
         // create radio
         rg = (RadioGroup)getView().findViewById(R.id.rg);
         for(int i=0; i<q.opts.length; i++) {
+          int id = i+10000;
+          System.out.println("  new radio["+i+"]: "+ id+ ", str: "+q.opts[i]);
           RadioButton rb = new RadioButton(getContext());
-          rb.setId(i + 100);
+          rb.setId(id);
           rb.setText(q.opts[i]);
           rb.setTextSize(30);
-          rb.setOnCheckedChangeListener(this);
           // selected
           if (sssn.aswr[curr] == i) {
-             rb.setSelected(true);
+             System.out.println("  checked radio: "+i);
+             rb.setChecked(true);
           }
+          //
+          rb.setOnCheckedChangeListener(this);
           rg.addView(rb);
         }
       } // radio
@@ -156,7 +158,7 @@ public class FragmentQuiz extends Fragment
 
       // btn next or finish
       Button btn_next = (Button)getView().findViewById(R.id.btn_next);
-      if (curr >= survey.list.size()) {
+      if (curr >= MyApp.survey.list.size()-1) {
         // next -> finish
         btn_next.setText("Finish");
       }
@@ -166,20 +168,18 @@ public class FragmentQuiz extends Fragment
 
     @Override
     public void onViewCreated(View _view, Bundle _savedInstanceState) {
-
 			// get arg
 			String target_app_name = FragmentQuizArgs.fromBundle(getArguments()).getTargetName();
-			curr = FragmentQuizArgs.fromBundle(getArguments()).getCurrPos();
+			// curr = FragmentQuizArgs.fromBundle(getArguments()).getCurrPos();
 
       //
-      MainActivity a = (MainActivity)getHost();
-      survey = a.survey;
-      sssn = a.get_sssn(target_app_name);
+      MainActivity main = (MainActivity)getHost();
+      sssn = MyApp.get_sssn(target_app_name);
       curr = sssn.curr;
-      m_checked = -1;
 
       // change app_name/title bar
-      a.setTitle(getString(R.string.app_name)+ ": " +sssn.name);
+      // main.setTitle(getString(R.string.app_name)+ ": " +sssn.name);
+      main.setTitle(sssn.name);
      
       // radio group
       rg = (RadioGroup)getView().findViewById(R.id.rg);
@@ -188,6 +188,7 @@ public class FragmentQuiz extends Fragment
 			btn_prev.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View _view) {
+            System.out.println("old qstn: "+curr+ ", new qstn: "+(curr-1));
             curr--;
             do_update();
 					}
@@ -199,9 +200,18 @@ public class FragmentQuiz extends Fragment
 					@Override
 					public void onClick(View _view) {
             try {
-              // next
-              curr++;
-              do_update();
+              if (curr < MyApp.survey.list.size()-1) {
+                // next
+                System.out.println("old qstn: "+curr+ ", new qstn: "+(curr+1));
+                curr++;
+                do_update();
+              } else { 
+                // finish
+                sssn.finish();
+                // nav -> list
+                NavDirections action = FragmentQuizDirections.actionFragmentQuizToFragmentList();
+                Navigation.findNavController(getView()).navigate(action);
+              }
             } catch (Exception _e) {
               System.out.println(_e);
             }
@@ -214,12 +224,41 @@ public class FragmentQuiz extends Fragment
 
 	@Override
 	public void onCheckedChanged(CompoundButton _button, boolean _isChecked) {
-    // give aswr
+    if (!_isChecked)
+      return;
+
+    RadioButton rb = (RadioButton)_button;
+    int id = rb.getId();
+    String txt = rb.getText().toString();
+    boolean b_chkd = rb.isChecked();
+    System.out.println("radio checked changed: " +id+ ", txt: "+txt+ ", checked: "+b_chkd);
+     
+    /* XXX somehow this returns wrong ID XXX
+    int id = rg.getCheckedRadioButtonId();
+    {
+      RadioButton chkd_rb = (RadioButton) getView().findViewById(id);
+      String txt = chkd_rb.getText().toString();
+      boolean b_chkd = chkd_rb.isChecked();
+      System.out.println("new checked radio: " +id+ ", txt: "+txt+ ", checked: "+b_chkd);
+    }
+    for (int i=0; i<3; i++) {
+      RadioButton rb = (RadioButton) getView().findViewById(10000+i);
+      String txt = rb.getText().toString();
+      boolean b_chkd = rb.isChecked();
+      System.out.println("rb[" +i+ "], txt: "+txt+ ", checked: "+b_chkd);
+    }
+    */
+
+    int chkd = id-10000;
+    if (_isChecked)
     try {
-      int aswr = rg.getCheckedRadioButtonId() - 100;
-      System.out.println("give aswr ------------ curr: "+curr+" aswr: "+aswr);
-      sssn.give_aswr(curr, aswr);
-      sssn.print();
+      // only if changed
+      if (chkd>=0 && chkd<MyApp.survey.list.get(curr).opts.length && sssn.aswr[curr] != chkd) {
+        // give aswr
+        System.out.println("give aswr to qstn: "+curr+", old aswr: "+sssn.aswr[curr]+ ", new aswr: "+chkd);
+        sssn.give_aswr(curr, chkd);
+        // sssn.print();
+      }
     } catch (Exception _e) {
       System.out.println(_e);
     }

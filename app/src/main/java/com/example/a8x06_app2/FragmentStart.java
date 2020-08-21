@@ -87,8 +87,7 @@ public class FragmentStart extends Fragment {
             EditText et_name = (EditText)getView().findViewById(R.id.etName);
             String name = et_name.getText().toString();
             if (name.length() <= 0) { // if empty, just gen a name
-              MainActivity a = (MainActivity)getHost();
-              name = "Unknown"+ a.sssn_list.size();
+              name = "Unknown"+ MyApp.sssn_list.size();
             }
 						action.setTargetName(name);
 						action.setCurrPos(0);
