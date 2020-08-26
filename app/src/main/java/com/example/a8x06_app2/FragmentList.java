@@ -82,6 +82,10 @@ public class FragmentList extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // set title
+        MainActivity main = (MainActivity)getHost();
+        main.setTitle(getString(R.string.app_name));
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         return rootView;

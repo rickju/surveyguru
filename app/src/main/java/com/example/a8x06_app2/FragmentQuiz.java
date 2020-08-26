@@ -170,7 +170,7 @@ public class FragmentQuiz extends Fragment
 			String target_app_name = FragmentQuizArgs.fromBundle(getArguments()).getTargetName();
 			// curr = FragmentQuizArgs.fromBundle(getArguments()).getCurrPos();
 
-      //
+      // set title bar
       MainActivity main = (MainActivity)getHost();
       sssn = MyApp.get_sssn(target_app_name);
 

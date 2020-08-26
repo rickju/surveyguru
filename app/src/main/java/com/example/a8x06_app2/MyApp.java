@@ -21,36 +21,100 @@ public class MyApp extends Application {
       // init questions
       // ----------------
       survey = new Survey();
-      // q 1
+      // q1
       {
-        String t = "Q: Hi, are u alice?";
-        String[] opts = {"A: Yes", "B: No", "C: Maybe"};
+        String t = "Q1: About how the product works, is it understandable or not understandable";
+        String[] opts = {"A: Understandable", "B: Not Understandable"};
         int aswr = 0;
         boolean b_mul = false;
         Qstn q = new Qstn(t, opts, b_mul, aswr);
         survey.add(q);
       }
-
       // q 2
       {
-        String t = "Q: Hi, are u bob? "; 
-        String[] opts = {"A: Yes", "B: No", "C: Maybe"};
-        int aswr = 1;
+        String t = "Q2: Is it easy to get familiar with the product and to learn how to use it?";
+        String[] opts = {"A: Yes", "B: No"};
+        int aswr = 0;
         boolean b_mul = false;
         Qstn q = new Qstn(t, opts, b_mul, aswr);
         survey.add(q);
       }
       // q 3
       {
-        String t = "Q: Hi, are u rick? "; 
-        String[] opts = {"A: Yes", "B: No", "C: Maybe"};
-        int aswr = 2;
+        String t = "Q3: Can you solve your tasks without unnecessary effort?";
+        String[] opts = {"A: Yes", "B: No"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+      // q 4
+      {
+        String t = "Q4: Do you feel in control of the interaction?";
+        String[] opts = {"A: Yes", "B: No"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+      // q 5
+      {
+        String t = "Q5: The UI of the product, is it organized or cluttered?";
+        String[] opts = {"A. Organized", "B. Cluttered"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+      // q 6
+      {
+        String t = "Q6: The reaction of the product, is it unpredictable? or predictable?";
+        String[] opts = {"A: Predictable", "B: Unpredictable"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+      // q 7
+      {
+        String t = "Q7: Does the product react fast, or slow?";
+        String[] opts = {"A: Fast", "B: Slow"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+
+      // q 8
+      {
+        String t = "Q8: Is it easy to learn, or difficult to learn?";
+        String[] opts = {"A: Easy", "B: Difficult"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+      // q 9
+      {
+        String t = "Q9: To finish a work, is it efficient or inefficient?";
+        String[] opts = {"A: Efficient", "B: Inefficient"};
+        int aswr = 0;
+        boolean b_mul = false;
+        Qstn q = new Qstn(t, opts, b_mul, aswr);
+        survey.add(q);
+      }
+      // q 10
+      {
+        String t = "Q10: Your overall impression of the product UI. Do you like it or not?";
+        String[] opts = {"A: Like it", "B: Do not like it"};
+        int aswr = 0;
         boolean b_mul = false;
         Qstn q = new Qstn(t, opts, b_mul, aswr);
         survey.add(q);
       }
 
       // simple unit test for session
+      /*
       try {
         System.out.println("------------   new session: ----");
         Session s1 = new Session(pref, survey, "Twitter");
@@ -74,10 +138,11 @@ public class MyApp extends Application {
       } catch (Exception _e) {
         System.out.println(_e);
       }
+      */
 
       try {
         // pref
-        pref = _ctx.getSharedPreferences("MyPref", 0);
+        pref = _ctx.getSharedPreferences("MyPref2", 0);
 
         // construct the data source
         sssn_list = new ArrayList<Session>();
